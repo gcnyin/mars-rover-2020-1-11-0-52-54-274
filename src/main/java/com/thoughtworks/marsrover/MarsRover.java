@@ -29,7 +29,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(Initialization.class, this::onInitialization)
+                .onMessage(Move.class, this::onMove)
                 .build();
+    }
+
+    private Behavior<Command> onMove(Move a) {
+        a.replyTo.tell(new ReceivePositionAndDirect(9.0, 20.0, Direct.W));
+        return this;
     }
 
     public Behavior<Command> onInitialization(Initialization initialization) {
@@ -67,6 +73,16 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
             this.y = y;
             this.direct = direct;
             this.replyTo = replyTo;
+        }
+    }
+
+    @ToString
+    @EqualsAndHashCode
+    public static class Move implements Command {
+        public final ActorRef<ReceivePositionAndDirect> replyTo;
+
+        public Move(ActorRef<ReceivePositionAndDirect> ref) {
+            replyTo = ref;
         }
     }
 }

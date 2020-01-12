@@ -24,6 +24,16 @@ public class MarsRoverTest {
         testProbe.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.W));
     }
 
+    @Test
+    public void should_move_to_north_1_step_when_receive_move_message() {
+        final ActorRef<MarsRover.Command> marsRover = actorTestKit.spawn(MarsRover.create(), "mars-rover");
+        final TestProbe<MarsRover.ReceivePositionAndDirect> center = actorTestKit.createTestProbe();
+        marsRover.tell(new MarsRover.Initialization(10.0, 20.0, Direct.W, center.getRef()));
+        center.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.W));
+        marsRover.tell(new MarsRover.Move(center.getRef()));
+        center.expectMessage(new MarsRover.ReceivePositionAndDirect(9.0, 20.0, Direct.W));
+    }
+
     @After
     public void tearDown() {
         actorTestKit.shutdownTestKit();
