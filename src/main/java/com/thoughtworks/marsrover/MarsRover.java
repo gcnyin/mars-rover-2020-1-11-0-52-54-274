@@ -1,5 +1,6 @@
 package com.thoughtworks.marsrover;
 
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
@@ -21,5 +22,16 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     @Override
     public Receive<Command> createReceive() {
         return newReceiveBuilder().build();
+    }
+
+    public static class ReceivePositionAndDirect {
+        public ReceivePositionAndDirect(double x, double y, Direct direct) {
+
+        }
+    }
+
+    public static class Initialization implements Command {
+        public Initialization(double x, double y, Direct direct, ActorRef<ReceivePositionAndDirect> replyTo) {
+        }
     }
 }
