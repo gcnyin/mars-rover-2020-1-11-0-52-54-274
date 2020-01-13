@@ -56,6 +56,16 @@ public class MarsRoverTest {
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 21.0, Direct.N));
     }
 
+    @Test
+    public void should_move_to_south_1_step_when_receive_move_message() {
+        final ActorRef<MarsRover.Command> marsRover = actorTestKit.spawn(MarsRover.create(), "mars-rover");
+        final TestProbe<MarsRover.ReceivePositionAndDirect> controlCenter = actorTestKit.createTestProbe();
+        marsRover.tell(new MarsRover.Initialization(10.0, 20.0, Direct.S, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.S));
+        marsRover.tell(new MarsRover.Move(controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 19.0, Direct.S));
+    }
+
     @After
     public void tearDown() {
         actorTestKit.shutdownTestKit();
