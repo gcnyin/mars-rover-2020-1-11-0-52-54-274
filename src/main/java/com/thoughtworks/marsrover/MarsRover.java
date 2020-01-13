@@ -44,6 +44,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onBatchMessage(BatchMessage a) {
+        a.commands.forEach(getContext().getSelf()::tell);
+        getContext().getSelf().tell(new GetRoverStatus(a.replyTo));
         return this;
     }
 
@@ -128,9 +130,11 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     @EqualsAndHashCode
     public static class BatchMessage implements Command {
         public ActorRef<ReceivePositionAndDirect> replyTo;
+        public List<Command> commands;
 
         public BatchMessage(ActorRef<ReceivePositionAndDirect> replyTo, List<Command> commands) {
             this.replyTo = replyTo;
+            this.commands = commands;
         }
     }
 

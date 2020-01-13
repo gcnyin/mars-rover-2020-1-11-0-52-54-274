@@ -4,7 +4,6 @@ import akka.actor.testkit.typed.javadsl.ActorTestKit;
 import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -110,14 +109,13 @@ public class MarsRoverTest {
     }
 
     @Test
-    @Ignore
     public void should_process_batch_messages() {
         final ActorRef<MarsRover.Command> marsRover = actorTestKit.spawn(MarsRover.create(), "mars-rover");
         final TestProbe<MarsRover.ReceivePositionAndDirect> controlCenter = actorTestKit.createTestProbe();
         final MarsRover.Initialization initialization = new MarsRover.Initialization(10.0, 20.0, Direct.N, controlCenter.getRef());
         final MarsRover.Move move = new MarsRover.Move(controlCenter.getRef());
         marsRover.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization, move)));
-        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(11.0, 20.0, Direct.N));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 21.0, Direct.N));
     }
 
     @After
