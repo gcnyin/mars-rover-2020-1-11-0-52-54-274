@@ -6,6 +6,9 @@ import akka.actor.typed.ActorRef;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class MarsRoverTest {
     private final ActorTestKit actorTestKit = ActorTestKit.create("test-kit");
 
@@ -87,6 +90,15 @@ public class MarsRoverTest {
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(15.0, 25.0, Direct.E));
         marsRover2.tell(new MarsRover.TurnDirect(Direct.N, controlCenter.getRef()));
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(15.0, 25.0, Direct.N));
+    }
+
+    @Test
+    public void should_process_batch_messages() {
+        final ActorRef<MarsRover.Command> marsRover = actorTestKit.spawn(MarsRover.create(), "mars-rover");
+        final TestProbe<MarsRover.ReceivePositionAndDirect> controlCenter = actorTestKit.createTestProbe();
+        final MarsRover.Initialization initialization = new MarsRover.Initialization(10.0, 20.0, Direct.N, controlCenter.getRef());
+        marsRover.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization)));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.N));
     }
 
     @After

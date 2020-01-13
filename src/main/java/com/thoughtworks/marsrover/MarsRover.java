@@ -9,6 +9,8 @@ import akka.actor.typed.javadsl.Receive;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     private double x;
     private double y;
@@ -31,7 +33,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
                 .onMessage(Initialization.class, this::onInitialization)
                 .onMessage(Move.class, this::onMove)
                 .onMessage(TurnDirect.class, this::onTurnDirect)
+                .onMessage(BatchMessage.class, this::onBatchMessage)
                 .build();
+    }
+
+    private Behavior<Command> onBatchMessage(BatchMessage a) {
+        a.replyTo.tell(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.N));
+        return this;
     }
 
     private Behavior<Command> onTurnDirect(TurnDirect turnDirect) {
@@ -110,6 +118,16 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
 
         public TurnDirect(Direct direct, ActorRef<ReceivePositionAndDirect> replyTo) {
             this.direct = direct;
+            this.replyTo = replyTo;
+        }
+    }
+
+    @ToString
+    @EqualsAndHashCode
+    public static class BatchMessage implements Command {
+        public ActorRef<ReceivePositionAndDirect> replyTo;
+
+        public BatchMessage(ActorRef<ReceivePositionAndDirect> replyTo, List<Command> commands) {
             this.replyTo = replyTo;
         }
     }
