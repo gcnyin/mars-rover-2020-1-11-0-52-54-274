@@ -32,6 +32,8 @@ public class MarsRoverTest {
         center.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.W));
         marsRover.tell(new MarsRover.Move(center.getRef()));
         center.expectMessage(new MarsRover.ReceivePositionAndDirect(9.0, 20.0, Direct.W));
+        marsRover.tell(new MarsRover.Move(center.getRef()));
+        center.expectMessage(new MarsRover.ReceivePositionAndDirect(8.0, 20.0, Direct.W));
     }
 
     @After
