@@ -40,6 +40,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
             x += 1;
         } else if (direct == Direct.N) {
             y += 1;
+        } else if (direct == Direct.S) {
+            y = 19;
         }
         a.replyTo.tell(new ReceivePositionAndDirect(x, y, direct));
         return this;
