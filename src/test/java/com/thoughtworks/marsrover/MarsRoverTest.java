@@ -78,6 +78,15 @@ public class MarsRoverTest {
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.S));
         marsRover.tell(new MarsRover.TurnDirect(Direct.W, controlCenter.getRef()));
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.W));
+        marsRover.tell(new MarsRover.TurnDirect(Direct.E, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.E));
+        actorTestKit.stop(marsRover);
+
+        final ActorRef<MarsRover.Command> marsRover2 = actorTestKit.spawn(MarsRover.create(), "mars-rover");
+        marsRover2.tell(new MarsRover.Initialization(15.0, 25.0, Direct.E, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(15.0, 25.0, Direct.E));
+        marsRover2.tell(new MarsRover.TurnDirect(Direct.N, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(15.0, 25.0, Direct.N));
     }
 
     @After

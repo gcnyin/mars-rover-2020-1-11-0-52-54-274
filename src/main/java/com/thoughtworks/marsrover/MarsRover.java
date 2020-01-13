@@ -35,7 +35,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onTurnDirect(TurnDirect turnDirect) {
-        turnDirect.replyTo.tell(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.S));
+        direct = turnDirect.direct;
+        turnDirect.replyTo.tell(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, direct));
         return this;
     }
 
@@ -104,10 +105,12 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     @ToString
     @EqualsAndHashCode
     public static class TurnDirect implements Command {
+        public Direct direct;
         public ActorRef<ReceivePositionAndDirect> replyTo;
 
-        public TurnDirect(Direct s, ActorRef<ReceivePositionAndDirect> ref) {
-            replyTo = ref;
+        public TurnDirect(Direct direct, ActorRef<ReceivePositionAndDirect> replyTo) {
+            this.direct = direct;
+            this.replyTo = replyTo;
         }
     }
 }
