@@ -34,7 +34,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
                 .onMessage(Move.class, this::onMove)
                 .onMessage(TurnDirect.class, this::onTurnDirect)
                 .onMessage(BatchMessage.class, this::onBatchMessage)
+                .onMessage(GetRoverStatus.class, this::onGetRoverStatus)
                 .build();
+    }
+
+    private Behavior<Command> onGetRoverStatus(GetRoverStatus getRoverStatus) {
+        getRoverStatus.replyTo.tell(new ReceivePositionAndDirect(x, y, direct));
+        return this;
     }
 
     private Behavior<Command> onBatchMessage(BatchMessage a) {
@@ -128,6 +134,16 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
         public ActorRef<ReceivePositionAndDirect> replyTo;
 
         public BatchMessage(ActorRef<ReceivePositionAndDirect> replyTo, List<Command> commands) {
+            this.replyTo = replyTo;
+        }
+    }
+
+    @ToString
+    @EqualsAndHashCode
+    public static class GetRoverStatus implements Command {
+        public ActorRef<ReceivePositionAndDirect> replyTo;
+
+        public GetRoverStatus(ActorRef<ReceivePositionAndDirect> replyTo) {
             this.replyTo = replyTo;
         }
     }
