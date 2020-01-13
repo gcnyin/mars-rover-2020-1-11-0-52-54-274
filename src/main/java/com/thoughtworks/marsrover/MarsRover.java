@@ -36,7 +36,7 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
 
     private Behavior<Command> onTurnDirect(TurnDirect turnDirect) {
         direct = turnDirect.direct;
-        turnDirect.replyTo.tell(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, direct));
+        turnDirect.replyTo.tell(new MarsRover.ReceivePositionAndDirect(x, y, direct));
         return this;
     }
 
