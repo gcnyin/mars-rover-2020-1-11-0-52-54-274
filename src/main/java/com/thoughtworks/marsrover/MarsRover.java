@@ -44,13 +44,11 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onBatchMessage(BatchMessage a) {
-        a.replyTo.tell(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.N));
         return this;
     }
 
     private Behavior<Command> onTurnDirect(TurnDirect turnDirect) {
         direct = turnDirect.direct;
-        turnDirect.replyTo.tell(new MarsRover.ReceivePositionAndDirect(x, y, direct));
         return this;
     }
 
@@ -64,7 +62,6 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
         } else if (direct == Direct.S) {
             y -= 1;
         }
-        a.replyTo.tell(new ReceivePositionAndDirect(x, y, direct));
         return this;
     }
 
@@ -72,7 +69,6 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
         x = initialization.x;
         y = initialization.y;
         direct = initialization.direct;
-        initialization.replyTo.tell(new ReceivePositionAndDirect(x, y, direct));
         return this;
     }
 
