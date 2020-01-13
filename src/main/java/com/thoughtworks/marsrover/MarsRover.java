@@ -34,7 +34,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onMove(Move a) {
-        a.replyTo.tell(new ReceivePositionAndDirect(9.0, 20.0, Direct.W));
+        x -= 1;
+        a.replyTo.tell(new ReceivePositionAndDirect(x, 20.0, Direct.W));
         return this;
     }
 
