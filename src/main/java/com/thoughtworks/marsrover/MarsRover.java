@@ -94,4 +94,11 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
             replyTo = ref;
         }
     }
+
+    @ToString
+    @EqualsAndHashCode
+    public static class TurnDirect implements Command {
+        public TurnDirect(Direct s, ActorRef<ReceivePositionAndDirect> ref) {
+        }
+    }
 }

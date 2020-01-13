@@ -68,6 +68,16 @@ public class MarsRoverTest {
         controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 18.0, Direct.S));
     }
 
+    @Test
+    public void should_turn_to_south() {
+        final ActorRef<MarsRover.Command> marsRover = actorTestKit.spawn(MarsRover.create(), "mars-rover");
+        final TestProbe<MarsRover.ReceivePositionAndDirect> controlCenter = actorTestKit.createTestProbe();
+        marsRover.tell(new MarsRover.Initialization(10.0, 20.0, Direct.N, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.N));
+        marsRover.tell(new MarsRover.TurnDirect(Direct.S, controlCenter.getRef()));
+        controlCenter.expectMessage(new MarsRover.ReceivePositionAndDirect(10.0, 20.0, Direct.S));
+    }
+
     @After
     public void tearDown() {
         actorTestKit.shutdownTestKit();
