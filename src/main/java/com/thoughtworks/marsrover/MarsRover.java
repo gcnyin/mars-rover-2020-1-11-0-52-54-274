@@ -39,6 +39,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
             y += 1;
         } else if (direct == Direct.S) {
             y -= 1;
+        } else if (direct == Direct.W) {
+            x -= 1;
         }
         return this;
     }
