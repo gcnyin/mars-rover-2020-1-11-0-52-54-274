@@ -3,7 +3,6 @@ package com.thoughtworks.marsrover;
 import akka.actor.testkit.typed.javadsl.ActorTestKit;
 import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -75,11 +74,24 @@ public class MarsRoverTest {
     public void should_move_some_steps() {
         final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
 
-        final ActorRef<MarsRover.Command> marsRover = testKit.spawn(MarsRover.create(), "mars-rover");
-        final MarsRover.Initialization initialization = new MarsRover.Initialization(10.0, 20.0, Direct.N);
-        final MarsRover.Move move = new MarsRover.Move();
-        marsRover.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization, move)));
-        controlCenter.expectMessage(new MarsRover.Status(11.0, 20.0, Direct.N));
-        testKit.stop(marsRover);
+        final ActorRef<MarsRover.Command> marsRover1 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final double x1 = 10.0;
+        final double y1 = 20.0;
+        final Direct direct1 = Direct.N;
+        final MarsRover.Initialization initialization1 = new MarsRover.Initialization(x1, y1, direct1);
+        final MarsRover.Move move1 = new MarsRover.Move();
+        marsRover1.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization1, move1)));
+        controlCenter.expectMessage(new MarsRover.Status(11.0, y1, direct1));
+        testKit.stop(marsRover1);
+
+        final ActorRef<MarsRover.Command> marsRover2 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final double x2 = 13.0;
+        final double y2 = 21.0;
+        final Direct direct2 = Direct.S;
+        final MarsRover.Initialization initialization2 = new MarsRover.Initialization(x2, y2, direct2);
+        final MarsRover.Move move2 = new MarsRover.Move();
+        marsRover2.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization2, move2)));
+        controlCenter.expectMessage(new MarsRover.Status(x2, 19.0, direct2));
+        testKit.stop(marsRover2);
     }
 }
