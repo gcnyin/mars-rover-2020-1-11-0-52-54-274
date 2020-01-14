@@ -12,10 +12,20 @@ public class MarsRoverTest {
 
     @Test
     public void should_return_rover_status() {
-        ActorRef<MarsRover.Command> marsRover = testKit.spawn(MarsRover.create(), "mars-rover");
-        final TestProbe<MarsRover.Status> testProbe = testKit.createTestProbe("control-center");
-        final MarsRover.Initialization initialization = new MarsRover.Initialization(10.0, 20.0, Direct.N);
-        marsRover.tell(new MarsRover.BatchMessage(testProbe.getRef(), Collections.singletonList(initialization)));
-        testProbe.expectMessage(new MarsRover.Status(10.0, 20.0, Direct.N));
+        final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
+
+        ActorRef<MarsRover.Command> marsRover1 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final MarsRover.Initialization initialization1 = new MarsRover.Initialization(10.0, 20.0, Direct.N);
+        marsRover1.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization1)));
+        controlCenter.expectMessage(new MarsRover.Status(10.0, 20.0, Direct.N));
+        testKit.stop(marsRover1);
+
+        ActorRef<MarsRover.Command> marsRover2 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final double x2 = 15.0;
+        final double y2 = 20.0;
+        final Direct direct2 = Direct.N;
+        final MarsRover.Initialization initialization2 = new MarsRover.Initialization(x2, y2, Direct.N);
+        marsRover2.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization2)));
+        controlCenter.expectMessage(new MarsRover.Status(x2, y2, direct2));
     }
 }
