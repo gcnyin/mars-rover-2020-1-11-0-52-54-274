@@ -35,7 +35,11 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onMove(Move message) {
-        x = 11.0;
+        if (direct == Direct.N) {
+            y += 1;
+        } else if (direct == Direct.S) {
+            y -= 1;
+        }
         return this;
     }
 
