@@ -39,5 +39,15 @@ public class MarsRoverTest {
         final MarsRover.Initialization initialization3 = new MarsRover.Initialization(x3, y3, direct3);
         marsRover3.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization3)));
         controlCenter.expectMessage(new MarsRover.Status(x3, y3, direct3));
+        testKit.stop(marsRover3);
+
+        ActorRef<MarsRover.Command> marsRover4 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final double x4 = 15.0;
+        final double y4 = 25.0;
+        final Direct direct4 = Direct.S;
+        final MarsRover.Initialization initialization4 = new MarsRover.Initialization(x4, y4, direct4);
+        marsRover4.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization4)));
+        controlCenter.expectMessage(new MarsRover.Status(x4, y4, direct4));
+        testKit.stop(marsRover4);
     }
 }
