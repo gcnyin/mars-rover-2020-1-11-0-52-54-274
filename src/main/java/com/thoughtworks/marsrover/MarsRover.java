@@ -29,7 +29,7 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
 
     private Behavior<Command> onBatchMessage(BatchMessage a) {
         final Initialization initialization = (Initialization) a.messages.get(0);
-        a.replyTo.tell(new Status(initialization.x, initialization.y, Direct.N));
+        a.replyTo.tell(new Status(initialization.x, initialization.y, initialization.direct));
         return this;
     }
 
