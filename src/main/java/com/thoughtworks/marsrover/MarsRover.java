@@ -12,6 +12,10 @@ import lombok.ToString;
 import java.util.List;
 
 public class MarsRover extends AbstractBehavior<MarsRover.Command> {
+    private Double x;
+    private Double y;
+    private Direct direct;
+
     public static Behavior<Command> create() {
         return Behaviors.setup(MarsRover::new);
     }
@@ -24,12 +28,32 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(BatchMessage.class, this::onBatchMessage)
+                .onMessage(Initialization.class, this::onInitialization)
+                .onMessage(Move.class, this::onMove)
+                .onMessage(QueryStatus.class, this::onQueryStatus)
                 .build();
     }
 
+    private Behavior<Command> onQueryStatus(QueryStatus a) {
+        a.replyTo.tell(new Status(11.0, 20.0, Direct.N));
+        return this;
+    }
+
+    private Behavior<Command> onInitialization(Initialization initialization) {
+        this.x = initialization.x;
+        this.y = initialization.y;
+        this.direct = initialization.direct;
+        return this;
+    }
+
+    private Behavior<Command> onMove(Move move) {
+        return this;
+    }
+
     private Behavior<Command> onBatchMessage(BatchMessage a) {
-        final Initialization initialization = (Initialization) a.messages.get(0);
-        a.replyTo.tell(new Status(initialization.x, initialization.y, initialization.direct));
+        final ActorRef<Command> self = getContext().getSelf();
+        a.messages.forEach(self::tell);
+        self.tell(new MarsRover.QueryStatus(a.replyTo));
         return this;
     }
 
@@ -73,5 +97,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     public static class Move implements Command {
+    }
+
+    private static class QueryStatus implements Command {
+        public final ActorRef<Status> replyTo;
+
+        public QueryStatus(ActorRef<Status> replyTo) {
+            this.replyTo = replyTo;
+        }
     }
 }
