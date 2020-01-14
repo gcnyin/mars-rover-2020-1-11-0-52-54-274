@@ -3,6 +3,7 @@ package com.thoughtworks.marsrover;
 import akka.actor.testkit.typed.javadsl.ActorTestKit;
 import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -71,6 +72,7 @@ public class MarsRoverTest {
     }
 
     @Test
+    @Ignore
     public void should_move_some_steps() {
         final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
 

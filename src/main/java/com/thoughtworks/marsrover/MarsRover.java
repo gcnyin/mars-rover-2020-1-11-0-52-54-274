@@ -12,6 +12,10 @@ import lombok.ToString;
 import java.util.List;
 
 public class MarsRover extends AbstractBehavior<MarsRover.Command> {
+    private Double x;
+    private Double y;
+    private Direct direct;
+
     public static Behavior<Command> create() {
         return Behaviors.setup(MarsRover::new);
     }
@@ -24,12 +28,27 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(BatchMessage.class, this::onBatchMessage)
+                .onMessage(Initialization.class, this::onInitialization)
+                .onMessage(QueryStatus.class, this::onQueryStatus)
                 .build();
     }
 
-    private Behavior<Command> onBatchMessage(BatchMessage a) {
-        final Initialization initialization = (Initialization) a.messages.get(0);
-        a.replyTo.tell(new Status(initialization.x, initialization.y, initialization.direct));
+    private Behavior<Command> onInitialization(Initialization message) {
+        x = message.x;
+        y = message.y;
+        direct = message.direct;
+        return this;
+    }
+
+    private Behavior<Command> onQueryStatus(QueryStatus message) {
+        message.replyTo.tell(new Status(x, y, direct));
+        return this;
+    }
+
+    private Behavior<Command> onBatchMessage(BatchMessage message) {
+        final ActorRef<Command> self = getContext().getSelf();
+        message.messages.forEach(self::tell);
+        self.tell(new QueryStatus(message.replyTo));
         return this;
     }
 
@@ -73,5 +92,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     public static class Move implements Command {
+    }
+
+    private static class QueryStatus implements Command {
+        public final ActorRef<Status> replyTo;
+
+        public QueryStatus(ActorRef<Status> replyTo) {
+            this.replyTo = replyTo;
+        }
     }
 }
