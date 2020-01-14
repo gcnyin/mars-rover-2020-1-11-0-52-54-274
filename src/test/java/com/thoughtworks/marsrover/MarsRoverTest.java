@@ -5,6 +5,7 @@ import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 public class MarsRoverTest {
@@ -67,5 +68,17 @@ public class MarsRoverTest {
         marsRover6.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization6)));
         controlCenter.expectMessage(new MarsRover.Status(x6, y6, direct6));
         testKit.stop(marsRover6);
+    }
+
+    @Test
+    public void should_move_some_steps() {
+        final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
+
+        final ActorRef<MarsRover.Command> marsRover = testKit.spawn(MarsRover.create(), "mars-rover");
+        final MarsRover.Initialization initialization = new MarsRover.Initialization(10.0, 20.0, Direct.N);
+        final MarsRover.Move move = new MarsRover.Move();
+        marsRover.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization, move)));
+        controlCenter.expectMessage(new MarsRover.Status(11.0, 20.0, Direct.N));
+        testKit.stop(marsRover);
     }
 }

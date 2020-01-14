@@ -71,4 +71,7 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
             this.direct = direct;
         }
     }
+
+    public static class Move implements Command {
+    }
 }
