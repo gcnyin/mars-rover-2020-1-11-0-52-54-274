@@ -28,7 +28,8 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     private Behavior<Command> onBatchMessage(BatchMessage a) {
-        a.replyTo.tell(new Status(10.0, 20.0, Direct.N));
+        final Initialization initialization = (Initialization) a.messages.get(0);
+        a.replyTo.tell(new Status(initialization.x, 20.0, Direct.N));
         return this;
     }
 
@@ -36,7 +37,14 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
     }
 
     public static class Initialization implements Command {
+        public final Double x;
+        public final Double y;
+        public final Direct direct;
+
         public Initialization(double x, double y, Direct direct) {
+            this.x = x;
+            this.y = y;
+            this.direct = direct;
         }
     }
 
