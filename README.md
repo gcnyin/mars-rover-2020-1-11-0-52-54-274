@@ -17,20 +17,3 @@
 ## Technical Details
 
 Use Actor Model - Akka to write implementation.
-
-## Task
-
-- 控制中心发送消息，不期待任何行为(Fire and forget)；
-
-- 探索车能接收并执行初始化指令；
-
-- 探索车能接收并执行移动指令；
-
-    - 如果指令方向为N，Y + 1
-    - 方向为S，Y - 1
-    - 方向为E，X + 1
-    - 方向为W，X - 1
-
-- 探索车能接收并执行转向指令；
-
-- 探索车能接收一批指令，按顺序执行相应的动作，并在完成这批指令后，汇报自己的坐标和朝向；
