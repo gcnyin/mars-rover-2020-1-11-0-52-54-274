@@ -114,4 +114,18 @@ public class MarsRoverTest {
         controlCenter.expectMessage(new MarsRover.Status(x4 + 1, y4, direct4));
         testKit.stop(marsRover4);
     }
+
+    @Test
+    public void should_turn_direct() {
+        final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
+
+        ActorRef<MarsRover.Command> marsRover1 = testKit.spawn(MarsRover.create(), "mars-rover");
+        final double x1 = 10.0;
+        final double y1 = 20.0;
+        final Direct direct1 = Direct.N;
+        final MarsRover.Initialization initialization1 = new MarsRover.Initialization(x1, y1, direct1);
+        final MarsRover.TurnDirect turnDirect1 = new MarsRover.TurnDirect(controlCenter.getRef(), Direct.S);
+        marsRover1.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Arrays.asList(initialization1, turnDirect1)));
+        controlCenter.expectMessage(new MarsRover.Status(x1, y1, Direct.S));
+    }
 }

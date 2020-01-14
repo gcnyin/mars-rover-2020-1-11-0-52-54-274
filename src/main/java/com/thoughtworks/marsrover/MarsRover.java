@@ -31,7 +31,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
                 .onMessage(Initialization.class, this::onInitialization)
                 .onMessage(QueryStatus.class, this::onQueryStatus)
                 .onMessage(Move.class, this::onMove)
+                .onMessage(TurnDirect.class, this::onTurnDirect)
                 .build();
+    }
+
+    private Behavior<Command> onTurnDirect(TurnDirect turnDirect) {
+        direct = Direct.S;
+        return this;
     }
 
     private Behavior<Command> onMove(Move message) {
@@ -113,6 +119,11 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
 
         public QueryStatus(ActorRef<Status> replyTo) {
             this.replyTo = replyTo;
+        }
+    }
+
+    public static class TurnDirect implements Command {
+        public TurnDirect(ActorRef<Status> replyTo, Direct direct) {
         }
     }
 }
