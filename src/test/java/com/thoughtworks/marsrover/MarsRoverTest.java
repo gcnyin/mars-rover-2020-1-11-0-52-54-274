@@ -15,16 +15,19 @@ public class MarsRoverTest {
         final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
 
         ActorRef<MarsRover.Command> marsRover1 = testKit.spawn(MarsRover.create(), "mars-rover");
-        final MarsRover.Initialization initialization1 = new MarsRover.Initialization(10.0, 20.0, Direct.N);
+        final double x1 = 10.0;
+        final double y1 = 20.0;
+        final Direct direct1 = Direct.N;
+        final MarsRover.Initialization initialization1 = new MarsRover.Initialization(x1, y1, direct1);
         marsRover1.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization1)));
-        controlCenter.expectMessage(new MarsRover.Status(10.0, 20.0, Direct.N));
+        controlCenter.expectMessage(new MarsRover.Status(x1, y1, Direct.N));
         testKit.stop(marsRover1);
 
         ActorRef<MarsRover.Command> marsRover2 = testKit.spawn(MarsRover.create(), "mars-rover");
         final double x2 = 15.0;
         final double y2 = 20.0;
         final Direct direct2 = Direct.N;
-        final MarsRover.Initialization initialization2 = new MarsRover.Initialization(x2, y2, Direct.N);
+        final MarsRover.Initialization initialization2 = new MarsRover.Initialization(x2, y2, direct2);
         marsRover2.tell(new MarsRover.BatchMessage(controlCenter.getRef(), Collections.singletonList(initialization2)));
         controlCenter.expectMessage(new MarsRover.Status(x2, y2, direct2));
     }
