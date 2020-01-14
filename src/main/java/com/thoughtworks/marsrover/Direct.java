@@ -1,5 +1,5 @@
 package com.thoughtworks.marsrover;
 
 public enum Direct {
-    S, N
+    S, E, W, N
 }
