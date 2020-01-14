@@ -72,7 +72,6 @@ public class MarsRoverTest {
     }
 
     @Test
-    @Ignore
     public void should_move_some_steps() {
         final TestProbe<MarsRover.Status> controlCenter = testKit.createTestProbe("control-center");
 

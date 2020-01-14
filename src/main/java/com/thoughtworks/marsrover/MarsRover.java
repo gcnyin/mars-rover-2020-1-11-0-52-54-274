@@ -30,7 +30,13 @@ public class MarsRover extends AbstractBehavior<MarsRover.Command> {
                 .onMessage(BatchMessage.class, this::onBatchMessage)
                 .onMessage(Initialization.class, this::onInitialization)
                 .onMessage(QueryStatus.class, this::onQueryStatus)
+                .onMessage(Move.class, this::onMove)
                 .build();
+    }
+
+    private Behavior<Command> onMove(Move message) {
+        x = 11.0;
+        return this;
     }
 
     private Behavior<Command> onInitialization(Initialization message) {
